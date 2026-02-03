@@ -1,0 +1,44 @@
+import SwiftUI
+
+struct PaymentSlipView: View {
+
+    @ObservedObject var vm: CafeteriaViewModel
+    @EnvironmentObject var theme: ThemeManager
+
+    var body: some View {
+        VStack(spacing: 18) {
+            
+            Text("Payment Receipt")
+                .font(.largeTitle.bold())
+                .foregroundColor(theme.textPrimary)
+            
+            Text("Order ID: \(vm.orderID)")
+                .foregroundColor(theme.textPrimary)
+            
+            Text("Auth Code: \(vm.authCode)")
+                .foregroundColor(.green)
+                .font(.headline)
+            
+            Divider()
+            
+            ForEach(vm.cart) { item in
+                HStack {
+                    Text("\(item.itemName) × \(item.quantity)")
+                    Spacer()
+                    Text("₹\(Int(item.price * Double(item.quantity)))")
+                }
+                .foregroundColor(theme.textPrimary)
+            }
+            
+            Divider()
+            
+            Text("Total Paid: ₹\(Int(vm.totalAmount))")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+            
+            Spacer()
+        }
+        .padding()
+        .background(theme.background.ignoresSafeArea())
+    }
+}
