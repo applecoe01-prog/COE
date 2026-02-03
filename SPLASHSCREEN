@@ -1,0 +1,32 @@
+import SwiftUI
+
+struct SplashScreen: View {
+    
+    @State private var scale = 0.6
+    @State private var opacity = 0.0
+    
+    var body: some View {
+        ZStack {
+            Color(red: 245/255, green: 230/255, blue: 200/255)
+                .ignoresSafeArea()
+            
+            Text("CampusVerse")
+                .font(.largeTitle.bold())
+                .scaleEffect(scale)
+                .opacity(opacity)
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.6)) {
+                scale = 1.0
+            }
+            withAnimation(.easeIn(duration: 1.0)) {
+                opacity = 1.0
+            }
+        }
+    }
+}//
+//  SplashScreen.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 31/01/26.
+//
