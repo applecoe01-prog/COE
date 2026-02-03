@@ -1,0 +1,78 @@
+import SwiftUI
+
+struct ClubDetailsView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    let club: Club
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 22) {
+                    
+                    // MARK: - Header Card
+                    HStack(spacing: 20) {
+                        
+                        // Club Icon
+                        Circle()
+                            .fill(Color.randomPastel)
+                            .frame(width: 85, height: 85)
+                            .overlay(
+                                Text(club.initials)
+                                    .font(.largeTitle.bold())
+                                    .foregroundColor(.black.opacity(0.7))
+                            )
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            
+                            Text(club.name)
+                                .font(.title.bold())
+                                .foregroundColor(theme.textPrimary)
+                            
+                            Text(club.category)
+                                .font(.subheadline)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(theme.chipBG)
+                                .clipShape(Capsule())
+                                .foregroundColor(theme.textPrimary)
+                            
+                            HStack(spacing: 4) {
+                                Image(systemName: "person.2.fill")
+                                Text("\(club.members) members")
+                            }
+                            .foregroundColor(theme.textSecondary)
+                            .font(.caption)
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .shadow(color: theme.isDark ? .clear : .black.opacity(0.07), radius: 4, y: 3)
+                    .padding(.top)
+                    
+                    
+                    // MARK: - About Section
+                    Text("About the Club")
+                        .font(.title3.bold())
+                        .foregroundColor(theme.textPrimary)
+                    
+                    Text(club.description)
+                        .font(.body)
+                        .foregroundColor(theme.textSecondary)
+                        .padding(.trailing)
+                    
+                    Spacer(minLength: 80)
+                }
+                .padding(.horizontal)
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
