@@ -1,0 +1,41 @@
+//
+//  SettingsRow.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 02/02/26.
+//
+
+
+import SwiftUI
+
+struct SettingsRow: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    let icon: String
+    let label: String
+    
+    var body: some View {
+        HStack(spacing: 14) {
+            
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundColor(theme.textPrimary)
+                .frame(width: 32, height: 32)
+                .background(theme.chipBG)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            
+            Text(label)
+                .foregroundColor(theme.textPrimary)
+                .font(.subheadline)
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .foregroundColor(theme.textSecondary)
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .shadow(color: theme.isDark ? .clear : .black.opacity(0.06), radius: 3, y: 2)
+    }
+}
