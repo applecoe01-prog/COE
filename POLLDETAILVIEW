@@ -1,0 +1,90 @@
+//
+//  PollDetailView.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 02/02/26.
+//
+
+
+import SwiftUI
+
+struct PollDetailView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State var poll: Poll
+    @State private var selectedOption = -1
+    
+    var totalVotes: Int {
+        poll.votes.reduce(0, +)
+    }
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 22) {
+                
+                Text(poll.question)
+                    .font(.title2.bold())
+                    .foregroundColor(theme.textPrimary)
+                
+                Text("Category: \(poll.category)")
+                    .font(.caption)
+                    .foregroundColor(theme.textSecondary)
+                
+                Divider().background(theme.textSecondary.opacity(0.4))
+                
+                // OPTIONS
+                VStack(spacing: 20) {
+                    ForEach(poll.options.indices, id: \.self) { i in
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            
+                            // Option Button
+                            Button(action: {
+                                selectedOption = i
+                                poll.votes[i] += 1
+                            }) {
+                                HStack {
+                                    Text(poll.options[i])
+                                        .foregroundColor(theme.textPrimary)
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(theme.cardBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(selectedOption == i ? theme.chipSelectedBG : .clear, lineWidth: 2)
+                                )
+                            }
+                            
+                            // RESULT BAR (if voted)
+                            if selectedOption != -1 {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    let percent = CGFloat(poll.votes[i]) / CGFloat(totalVotes)
+                                    
+                                    ZStack(alignment: .leading) {
+                                        Capsule().fill(theme.chipBG).frame(height: 8)
+                                        Capsule().fill(theme.chipSelectedBG.opacity(0.7))
+                                            .frame(width: percent * UIScreen.main.bounds.width * 0.75, height: 8)
+                                    }
+                                    
+                                    Text("\(poll.votes[i]) votes")
+                                        .font(.caption2)
+                                        .foregroundColor(theme.textSecondary)
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding()
+        }
+        .navigationTitle("Poll")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
