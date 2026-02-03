@@ -1,0 +1,45 @@
+//
+//  Event 2.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 02/02/26.
+//
+
+
+import Foundation
+
+struct Event: Identifiable, Codable, Equatable {
+    var id = UUID()
+    var title: String
+    var date: Date
+    var category: String
+    var description: String
+    
+    // MARK: - Sample Events
+    static let sample: [Event] = [
+        Event(title: "Tech Week 2026",
+              date: DateComponents(calendar: .current, year: 2026, month: 3, day: 10).date!,
+              category: "Technical",
+              description: "AI/ML workshops, cloud bootcamps, web dev sessions and hands-on labs."),
+
+        Event(title: "HackBattle 24hr",
+              date: DateComponents(calendar: .current, year: 2026, month: 3, day: 22).date!,
+              category: "Technical",
+              description: "24hr hackathon — problem statements for AI, finance, mobility, health."),
+
+        Event(title: "Cultural Fest",
+              date: DateComponents(calendar: .current, year: 2026, month: 4, day: 5).date!,
+              category: "Cultural",
+              description: "Music, dance, drama, fashion show and multi-stage performances."),
+
+        Event(title: "Sports Meet",
+              date: DateComponents(calendar: .current, year: 2026, month: 4, day: 14).date!,
+              category: "Sports",
+              description: "Athletics, cricket, football, basketball and inter-college tournaments."),
+
+        Event(title: "Literary Symposium",
+              date: DateComponents(calendar: .current, year: 2026, month: 5, day: 2).date!,
+              category: "Literary",
+              description: "Debating, creative writing, public speaking and poetry slam competitions.")
+    ]
+}
