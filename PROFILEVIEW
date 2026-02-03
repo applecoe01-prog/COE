@@ -1,0 +1,82 @@
+import SwiftUI
+
+struct ProfileView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                
+                VStack(spacing: 30) {
+                    
+                    // MARK: - Profile Header
+                    VStack(spacing: 15) {
+                        
+                        // Avatar Circle
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        Color(red: 255/255, green: 230/255, blue: 180/255),
+                                        Color(red: 255/255, green: 200/255, blue: 160/255)
+                                    ],
+                                    startPoint: .top, endPoint: .bottom
+                                )
+                            )
+                            .frame(width: 120, height: 120)
+                            .overlay(
+                                Text("AC")
+                                    .font(.largeTitle.bold())
+                                    .foregroundColor(.black.opacity(0.7))
+                            )
+                            .shadow(color: .black.opacity(0.1), radius: 6, y: 4)
+                        
+                        // Name + Subtitle
+                        Text("Aman Chaudhary")
+                            .foregroundColor(theme.textPrimary)
+                            .font(.title.bold())
+                        
+                        Text("CampusVerse Member")
+                            .foregroundColor(theme.textSecondary)
+                            .font(.subheadline)
+                    }
+                    .padding(.top, 20)
+                    
+                    
+                    // MARK: - Stats Section
+                    HStack(spacing: 20) {
+                        ProfileStatCard(title: "Clubs", value: "5")
+                        ProfileStatCard(title: "Events", value: "12")
+                        ProfileStatCard(title: "Notices", value: "24")
+                    }
+                    .padding(.horizontal)
+                    
+                    
+                    // MARK: - Settings Section
+                    VStack(alignment: .leading, spacing: 18) {
+                        
+                        Text("Settings")
+                            .foregroundColor(theme.textPrimary)
+                            .font(.title3.bold())
+                            .padding(.leading, 4)
+                        
+                        VStack(spacing: 14) {
+                            SettingsRow(icon: "person.crop.circle", label: "Account")
+                            SettingsRow(icon: "bell.fill", label: "Notifications")
+                            SettingsRow(icon: "shield.lefthalf.filled", label: "Privacy")
+                            SettingsRow(icon: "paintbrush.fill", label: "Appearance")
+                        }
+                    }
+                    .padding(.horizontal)
+                    
+                    Spacer(minLength: 80)
+                }
+                .padding(.vertical)
+            }
+        }
+    }
+}
