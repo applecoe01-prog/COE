@@ -1,0 +1,31 @@
+//
+//  OrderIDGenerator.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 03/02/26.
+//
+
+import Foundation
+
+struct OrderIDGenerator {
+    
+    /// Generates a unique Order ID like: ORD-38294
+    static func generateOrderID() -> String {
+        let number = Int.random(in: 10000...99999)
+        return "ORD-\(number)"
+    }
+    
+    /// Generates tracking code like: TRK-A92F4C8E
+    static func generateTrackingCode() -> String {
+        let uuid = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+        let shortCode = String(uuid.prefix(8)).uppercased()
+        return "TRK-\(shortCode)"
+    }
+    
+    /// Generates Auth Code like: A4F29X
+    static func generateAuthCode() -> String {
+        let uuid = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+        let code = String(uuid.prefix(6)).uppercased()
+        return code
+    }
+}
