@@ -6,36 +6,39 @@ struct PaymentSlipView: View {
     @EnvironmentObject var theme: ThemeManager
 
     var body: some View {
-        ZStack {
-            theme.background.ignoresSafeArea()
-
-            VStack(spacing: 20) {
-
-                Text("Payment Slip")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(theme.textPrimary)
-
-                ForEach(vm.cart) { item in
-                    HStack {
-                        Text(item.itemName)
-                        Spacer()
-                        Text("₹\(Int(item.price))")
-                    }
-                    .foregroundColor(theme.textPrimary)
+        VStack(spacing: 18) {
+            
+            Text("Payment Receipt")
+                .font(.largeTitle.bold())
+                .foregroundColor(theme.textPrimary)
+            
+            Text("Order ID: \(vm.orderID)")
+                .foregroundColor(theme.textPrimary)
+            
+            Text("Auth Code: \(vm.authCode)")
+                .foregroundColor(.green)
+                .font(.headline)
+            
+            Divider()
+            
+            ForEach(vm.cart) { item in
+                HStack {
+                    Text("\(item.itemName) × \(item.quantity)")
+                    Spacer()
+                    Text("₹\(Int(item.price * Double(item.quantity)))")
                 }
-
-                Divider()
-
-                Text("Total Paid: ₹\(Int(vm.totalAmount))")
-                    .font(.headline)
-                    .foregroundColor(theme.textPrimary)
-
-                Text("Thank you for your order!")
-                    .foregroundColor(theme.textSecondary)
-
-                Spacer()
+                .foregroundColor(theme.textPrimary)
             }
-            .padding()
+            
+            Divider()
+            
+            Text("Total Paid: ₹\(Int(vm.totalAmount))")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+            
+            Spacer()
         }
+        .padding()
+        .background(theme.background.ignoresSafeArea())
     }
 }
