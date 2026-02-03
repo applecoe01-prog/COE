@@ -1,0 +1,13 @@
+import SwiftUI
+
+struct Cafeteria: Identifiable, Codable {
+    var id = UUID()
+    var name: String
+    var menu: [MenuItem]
+}
+
+struct MenuItem: Identifiable, Codable {
+    var id = UUID()
+    var itemName: String
+    var price: Double
+}
