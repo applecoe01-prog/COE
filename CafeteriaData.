@@ -1,0 +1,50 @@
+import SwiftUI
+
+struct CafeteriaData {
+    static let all: [Cafeteria] = [
+        Cafeteria(
+            name: "Nescafe Cafeteria",
+            menu: [
+                MenuItem(itemName: "Cold Coffee", price: 40),
+                MenuItem(itemName: "Sandwich", price: 35),
+                MenuItem(itemName: "Maggie", price: 30)
+            ]
+        ),
+
+        Cafeteria(
+            name: "Green Chilli",
+            menu: [
+                MenuItem(itemName: "Fried Rice", price: 70),
+                MenuItem(itemName: "Chilli Potato", price: 60),
+                MenuItem(itemName: "Thali", price: 90)
+            ]
+        ),
+
+        Cafeteria(
+            name: "Big Treat",
+            menu: [
+                MenuItem(itemName: "Burger", price: 50),
+                MenuItem(itemName: "Pizza Slice", price: 60),
+                MenuItem(itemName: "Garlic Bread", price: 40)
+            ]
+        ),
+
+        Cafeteria(
+            name: "Hungry Hut",
+            menu: [
+                MenuItem(itemName: "Momos", price: 40),
+                MenuItem(itemName: "Chowmein", price: 50),
+                MenuItem(itemName: "Rolls", price: 35)
+            ]
+        ),
+
+        Cafeteria(
+            name: "Hungry Nites",
+            menu: [
+                MenuItem(itemName: "Parantha", price: 30),
+                MenuItem(itemName: "Tea", price: 10),
+                MenuItem(itemName: "Omelette", price: 25)
+            ]
+        )
+    ]
+}
