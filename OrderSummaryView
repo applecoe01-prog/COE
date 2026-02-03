@@ -1,64 +1,69 @@
 import SwiftUI
 
 struct OrderSummaryView: View {
-    
+
     @ObservedObject var vm: CafeteriaViewModel
     @EnvironmentObject var theme: ThemeManager
-    
+
     var body: some View {
-        
-        VStack(alignment: .leading, spacing: 20) {
-            
-            Text("Order Summary")
-                .font(.title2.bold())
-                .foregroundColor(theme.textPrimary)
-            
-            ForEach(vm.cart) { item in
-                HStack {
-                    Text(item.itemName)
-                        .foregroundColor(theme.textPrimary)
-                    Spacer()
-                    Text("₹\(Int(item.price))")
+        ZStack {
+            theme.background.ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 20) {
+
+                Text("Order Summary")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(theme.textPrimary)
+
+                ForEach(vm.cart) { item in
+                    HStack {
+                        Text(item.itemName)
+                        Spacer()
+                        Text("₹\(Int(item.price))")
+                    }
+                    .foregroundColor(theme.textPrimary)
                 }
-            }
-            
-            Divider()
-            
-            Text("Total: ₹\(Int(vm.totalAmount))")
-                .font(.headline)
-                .foregroundColor(theme.textPrimary)
-            
-            Button("Place Order") {
-                vm.placeOrder()
+
+                Divider()
+
+                Text("Total: ₹\(Int(vm.totalAmount))")
+                    .font(.headline)
+                    .foregroundColor(theme.textPrimary)
+
+                Button("Place Order") {
+                    vm.placeOrder()
+                }
+                .buttonStyle(orderButtonStyle)
+
+                if vm.isOrderPlaced {
+                    Button("Pay Now") {
+                        vm.payNow()
+                    }
+                    .buttonStyle(payButtonStyle)
+                }
+
+                if vm.isPaid {
+                    NavigationLink("Generate Slip") {
+                        PaymentSlipView(vm: vm)
+                    }
+                    .buttonStyle(orderButtonStyle)
+                }
+
+                Spacer()
             }
             .padding()
-            .frame(maxWidth: .infinity)
-            .background(theme.cardBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            
-            if vm.isOrderPlaced {
-                Button("Pay Now") {
-                    vm.markAsPaid()
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(theme.chipSelectedBG)
-                .foregroundColor(theme.chipSelectedText)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-            }
-            
-            if vm.isPaid {
-                NavigationLink("Generate Slip") {
-                    PaymentSlipView(vm: vm)
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(theme.cardBackground)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-            }
-
-            Spacer()
         }
-        .padding()
+    }
+
+    var orderButtonStyle: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(theme.cardBackground)
+            .frame(height: 55)
+    }
+
+    var payButtonStyle: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(theme.chipSelectedBG)
+            .frame(height: 55)
     }
 }
