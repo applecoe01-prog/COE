@@ -2,9 +2,9 @@ import SwiftUI
 
 class CafeteriaViewModel: ObservableObject {
     
-    @Published var cafeterias = CafeteriaData.all
+    @Published var cafeterias: [Cafeteria] = CafeteriaData.all
     @Published var cart: [MenuItem] = []
-    @Published var selectedCafeteria: Cafeteria?
+    
     @Published var isOrderPlaced = false
     @Published var isPaid = false
     
@@ -20,7 +20,7 @@ class CafeteriaViewModel: ObservableObject {
         isOrderPlaced = true
     }
     
-    func markAsPaid() {
+    func payNow() {
         isPaid = true
     }
 }
