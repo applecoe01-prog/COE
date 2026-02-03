@@ -1,0 +1,42 @@
+import Foundation
+
+struct Notice: Identifiable, Codable, Equatable {
+    var id = UUID()
+    var title: String
+    var message: String
+    var date: String
+    var category: String   // Admin, Clubs, Placements, Lost and Found
+    var isImportant: Bool
+    
+    static let sample: [Notice] = [
+        Notice(title: "Exam Schedule Released",
+               message: "Midsems start from 17 March. Download full timetable from ERP.",
+               date: "28 Feb 2026",
+               category: "Admin",
+               isImportant: true),
+        
+        Notice(title: "Placement Drive: Infosys",
+               message: "Eligibility: 7.0 CGPA. Apply before 10 March.",
+               date: "26 Feb 2026",
+               category: "Placements",
+               isImportant: true),
+        
+        Notice(title: "Photography Club Orientation",
+               message: "Meet at Seminar Hall 2 at 4 PM.",
+               date: "25 Feb 2026",
+               category: "Clubs",
+               isImportant: false),
+        
+        Notice(title: "Lost Wallet",
+               message: "Black leather wallet found near Block C.",
+               date: "22 Feb 2026",
+               category: "Lost and Found",
+               isImportant: false),
+        
+        Notice(title: "Library Closed",
+               message: "Closed on 5 March due to maintenance.",
+               date: "27 Feb 2026",
+               category: "Admin",
+               isImportant: false)
+    ]
+}
