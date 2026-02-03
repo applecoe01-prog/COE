@@ -1,0 +1,76 @@
+mport SwiftUI
+
+struct CommunityView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    
+    @State private var search = ""
+    @State private var selectedCategory = "All"
+    
+    let categories = ["All", "Admin", "Community", "Technical", "Cultural"]
+    let polls = Poll.sample
+    
+    var filteredPolls: [Poll] {
+        polls.filter { poll in
+            (selectedCategory == "All" || poll.category == selectedCategory)
+            &&
+            (search.isEmpty || poll.question.lowercased().contains(search.lowercased()))
+        }
+    }
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 22) {
+                    
+                    Text("Community")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+                    
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Search polls…", text: $search)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    
+                    // Category chips
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(categories, id: \.self) { cat in
+                                Text(cat)
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 8)
+                                    .background(selectedCategory == cat ? theme.chipSelectedBG : theme.chipBG)
+                                    .foregroundColor(selectedCategory == cat ? theme.chipSelectedText : theme.textPrimary)
+                                    .clipShape(Capsule())
+                                    .onTapGesture { selectedCategory = cat }
+                            }
+                        }
+                        .padding(.vertical, 5)
+                    }
+                    
+                    // Poll list
+                    VStack(spacing: 16) {
+                        ForEach(filteredPolls) { poll in
+                            NavigationLink(destination: PollDetailView(poll: poll)) {
+                                PollCard(poll: poll)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 70)
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}
