@@ -39,6 +39,11 @@ struct MainTabView: View {
                         Image(systemName: "magnifyingglass")
                         Text("Search")
                     }
+                    CafeteriaListView().tabItem {
+        Image(systemName: "fork.knife") 
+        Text("Cafeteria")
+    }
+
                 
                 NoticesView()
                     .tag(3)
