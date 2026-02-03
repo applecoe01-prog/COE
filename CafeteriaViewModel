@@ -1,0 +1,26 @@
+import SwiftUI
+
+class CafeteriaViewModel: ObservableObject {
+    
+    @Published var cafeterias = CafeteriaData.all
+    @Published var cart: [MenuItem] = []
+    @Published var selectedCafeteria: Cafeteria?
+    @Published var isOrderPlaced = false
+    @Published var isPaid = false
+    
+    var totalAmount: Double {
+        cart.reduce(0) { $0 + $1.price }
+    }
+    
+    func addToCart(item: MenuItem) {
+        cart.append(item)
+    }
+    
+    func placeOrder() {
+        isOrderPlaced = true
+    }
+    
+    func markAsPaid() {
+        isPaid = true
+    }
+}
