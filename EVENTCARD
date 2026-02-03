@@ -1,0 +1,71 @@
+import SwiftUI
+
+struct EventCard: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    let event: Event
+    
+    var body: some View {
+        
+        VStack(alignment: .leading, spacing: 12) {
+            
+            HStack(alignment: .top, spacing: 15) {
+                
+                // MARK: - Left Gradient Strip
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                theme.categoryColor[event.category] ?? .blue,
+                                (theme.categoryColor[event.category] ?? .blue).opacity(0.5)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 8)
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    
+                    Text(event.title)
+                        .font(.headline)
+                        .foregroundColor(theme.textPrimary)
+                    
+                    Text(dateFormatted(event.date))
+                        .font(.caption)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    Text(event.description)
+                        .foregroundColor(theme.textSecondary)
+                        .font(.subheadline)
+                        .lineLimit(3)
+                }
+                
+                Spacer()
+            }
+            
+            // MARK: - Register Button
+            Button(action: {}) {
+                Text("Register")
+                    .font(.subheadline.bold())
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 8)
+                    .background(theme.chipSelectedBG)
+                    .foregroundColor(theme.chipSelectedText)
+                    .clipShape(Capsule())
+            }
+            .padding(.leading, 10)
+            
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .shadow(color: theme.isDark ? .clear : .black.opacity(0.07), radius: 4, y: 2)
+    }
+    
+    func dateFormatted(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "dd MMM yyyy"
+        return f.string(from: date)
+    }
+}
