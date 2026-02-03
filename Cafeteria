@@ -3,6 +3,7 @@ import SwiftUI
 struct Cafeteria: Identifiable, Codable {
     var id = UUID()
     var name: String
+    var imageName: String        // cafeteria banner image
     var menu: [MenuItem]
 }
 
@@ -10,4 +11,5 @@ struct MenuItem: Identifiable, Codable {
     var id = UUID()
     var itemName: String
     var price: Double
+    var imageName: String        // food item image
 }
