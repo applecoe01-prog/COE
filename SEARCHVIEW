@@ -1,0 +1,152 @@
+import SwiftUI
+
+struct SearchView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State private var search = ""
+    @State private var selectedFilter = "All"
+    
+    let filters = ["All", "Clubs", "Events", "Notices"]
+    
+    let clubs = Club.sample
+    let events = Event.sample
+    let notices = Notice.sample
+    
+    // MARK: - Combined Filter Logic
+    var filteredClubs: [Club] {
+        clubs.filter {
+            search.isEmpty ||
+            $0.name.lowercased().contains(search.lowercased()) ||
+            $0.category.lowercased().contains(search.lowercased())
+        }
+    }
+    
+    var filteredEvents: [Event] {
+        events.filter {
+            search.isEmpty ||
+            $0.title.lowercased().contains(search.lowercased()) ||
+            $0.category.lowercased().contains(search.lowercased())
+        }
+    }
+    
+    var filteredNotices: [Notice] {
+        notices.filter {
+            search.isEmpty ||
+            $0.title.lowercased().contains(search.lowercased()) ||
+            $0.category.lowercased().contains(search.lowercased())
+        }
+    }
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    
+                    // Title
+                    Text("Search")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+                    
+                    // MARK: - Search Bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(theme.textSecondary)
+                        
+                        TextField("Search clubs, events, notices…", text: $search)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    
+                    // MARK: - Filters
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(filters, id: \.self) { filter in
+                                
+                                Text(filter)
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 8)
+                                    .background(
+                                        selectedFilter == filter
+                                        ? theme.chipSelectedBG
+                                        : theme.chipBG
+                                    )
+                                    .foregroundColor(
+                                        selectedFilter == filter
+                                        ? theme.chipSelectedText
+                                        : theme.textPrimary
+                                    )
+                                    .clipShape(Capsule())
+                                    .onTapGesture {
+                                        selectedFilter = filter
+                                    }
+                            }
+                        }
+                        .padding(.vertical, 5)
+                    }
+                    
+                    // MARK: - Results
+                    VStack(alignment: .leading, spacing: 22) {
+                        
+                        // ---- CLUBS ----
+                        if selectedFilter == "All" || selectedFilter == "Clubs" {
+                            if !filteredClubs.isEmpty {
+                                Text("Clubs")
+                                    .font(.title3.bold())
+                                    .foregroundColor(theme.textPrimary)
+                                
+                                VStack(spacing: 14) {
+                                    ForEach(filteredClubs) { club in
+                                        NavigationLink(destination: ClubDetailsView(club: club)) {
+                                            ClubCard(club: club)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // ---- EVENTS ----
+                        if selectedFilter == "All" || selectedFilter == "Events" {
+                            if !filteredEvents.isEmpty {
+                                Text("Events")
+                                    .font(.title3.bold())
+                                    .foregroundColor(theme.textPrimary)
+                                
+                                VStack(spacing: 14) {
+                                    ForEach(filteredEvents) { event in
+                                        EventCard(event: event)
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // ---- NOTICES ----
+                        if selectedFilter == "All" || selectedFilter == "Notices" {
+                            if !filteredNotices.isEmpty {
+                                Text("Notices")
+                                    .font(.title3.bold())
+                                    .foregroundColor(theme.textPrimary)
+                                
+                                VStack(spacing: 14) {
+                                    ForEach(filteredNotices) { notice in
+                                        NoticeCard(notice: notice)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.top, 10)
+                    .padding(.bottom, 70)
+                    
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}
