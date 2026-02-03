@@ -27,7 +27,7 @@ struct MainTabView: View {
                         Text("Events")
                     }
                 CommunityView()
-                    .tag(5)
+                    
                     .tabItem {
                         Image(systemName: "person.3.sequence.fill")
                         Text("Community")
@@ -39,10 +39,13 @@ struct MainTabView: View {
                         Image(systemName: "magnifyingglass")
                         Text("Search")
                     }
-                    CafeteriaListView().tabItem {
-        Image(systemName: "fork.knife") 
+                   CafeteriaListView()
+    .tag(5)
+    .tabItem {
+        Image(systemName: "fork.knife")
         Text("Cafeteria")
     }
+
 
                 
                 NoticesView()
