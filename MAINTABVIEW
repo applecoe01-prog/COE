@@ -1,0 +1,78 @@
+import SwiftUI
+
+struct MainTabView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State private var selected = 0
+    
+    var body: some View {
+        ZStack {
+            
+            theme.background.ignoresSafeArea()
+            
+            TabView(selection: $selected) {
+
+                
+                ClubsView()
+                    .tag(0)
+                    .tabItem {
+                        Image(systemName: "person.3.fill")
+                        Text("Clubs")
+                    }
+                
+                EventsView()
+                    .tag(1)
+                    .tabItem {
+                        Image(systemName: "calendar")
+                        Text("Events")
+                    }
+                CommunityView()
+                    .tag(5)
+                    .tabItem {
+                        Image(systemName: "person.3.sequence.fill")
+                        Text("Community")
+                    }
+                
+                SearchView()
+                    .tag(2)
+                    .tabItem {
+                        Image(systemName: "magnifyingglass")
+                        Text("Search")
+                    }
+                
+                NoticesView()
+                    .tag(3)
+                    .tabItem {
+                        Image(systemName: "bell")
+                        Text("Notices")
+                    }
+                
+                ProfileView()
+                    .tag(4)
+                    .tabItem {
+                        Image(systemName: "person.circle.fill")
+                        Text("Profile")
+                    }
+            }
+            
+            /// Global Dark Mode Toggle Button
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button {
+                        theme.isDark.toggle()
+                    } label: {
+                        Image(systemName: theme.isDark ? "sun.max.fill" : "moon.fill")
+                            .font(.title3)
+                            .padding(16)
+                            .background(theme.cardBackground)
+                            .clipShape(Circle())
+                    }
+                    .padding(.bottom, 70)
+                    .padding(.trailing, 20)
+                }
+            }
+        }
+    }
+}
