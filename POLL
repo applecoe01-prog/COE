@@ -1,0 +1,40 @@
+//
+//  Poll.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 02/02/26.
+//
+
+
+import SwiftUI
+
+struct Poll: Identifiable, Codable, Equatable {
+    var id = UUID()
+    var question: String
+    var options: [String]
+    var votes: [Int]   // parallel array for votes per option
+    var category: String  // Admin, Cultural, Technical etc.
+    
+    static let sample: [Poll] = [
+        Poll(
+            question: "Should the upcoming Tech Fest be a 2-day event?",
+            options: ["Yes", "No", "Maybe"],
+            votes: [120, 45, 22],
+            category: "Admin"
+        ),
+        
+        Poll(
+            question: "Which new club should the campus introduce?",
+            options: ["Robotics Club", "Drama Club", "Finance Club"],
+            votes: [80, 65, 40],
+            category: "Community"
+        ),
+        
+        Poll(
+            question: "Preferred timing for cultural practice?",
+            options: ["Morning", "Afternoon", "Evening"],
+            votes: [50, 30, 90],
+            category: "Cultural"
+        )
+    ]
+}
