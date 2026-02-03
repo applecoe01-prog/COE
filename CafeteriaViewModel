@@ -7,20 +7,76 @@ class CafeteriaViewModel: ObservableObject {
     
     @Published var isOrderPlaced = false
     @Published var isPaid = false
+    @Published var authCode = ""
+    @Published var orderID = ""
+    
+    @Published var currentStage: OrderStage = .placed
     
     var totalAmount: Double {
-        cart.reduce(0) { $0 + $1.price }
+        cart.reduce(0) { $0 + ($1.price * Double($1.quantity)) }
     }
     
     func addToCart(item: MenuItem) {
-        cart.append(item)
+        if let index = cart.firstIndex(where: { $0.itemName == item.itemName }) {
+            cart[index].quantity += 1
+        } else {
+            cart.append(item)
+        }
+    }
+    
+    func decreaseQuantity(item: MenuItem) {
+        if let index = cart.firstIndex(where: { $0.id == item.id }) {
+            if cart[index].quantity > 1 {
+                cart[index].quantity -= 1
+            } else {
+                cart.remove(at: index)
+            }
+        }
+    }
+    
+    func removeItem(item: MenuItem) {
+        cart.removeAll { $0.id == item.id }
     }
     
     func placeOrder() {
         isOrderPlaced = true
+        orderID = "ORD-\(Int.random(in: 10000...99999))"
+        generateAuthCode()
+        startOrderProgression()
     }
     
     func payNow() {
         isPaid = true
+        currentStage = .paid
+    }
+    
+    func generateAuthCode() {
+        authCode = String(format: "%06d", Int.random(in: 000000...999999))
+    }
+    
+    // Auto-progress tracking simulation
+    func startOrderProgression() {
+        currentStage = .placed
+        
+        // move to preparing
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            if self.currentStage != .paid {
+                self.currentStage = .preparing
+            }
+        }
+        
+        // move to ready
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+            if self.currentStage != .paid {
+                self.currentStage = .ready
+            }
+        }
+        
+        // move to delivered
+        DispatchQueue.main.asyncAfter(deadline: .now() + 13) {
+            if self.currentStage != .paid {
+                self.currentStage = .delivered
+            }
+        }
     }
 }
