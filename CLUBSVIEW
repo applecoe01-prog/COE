@@ -1,0 +1,86 @@
+import SwiftUI
+
+struct ClubsView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State private var selectedCategory = "All"
+    @State private var searchText = ""
+    
+    let categories = ["All", "Technical", "Cultural", "Sports", "Literary"]
+    let clubs = Club.sample
+    
+    var filtered: [Club] {
+        clubs.filter { club in
+            (selectedCategory == "All" || club.category == selectedCategory) &&
+            (searchText.isEmpty ||
+             club.name.lowercased().contains(searchText.lowercased()) ||
+             club.category.lowercased().contains(searchText.lowercased()))
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    
+                    // MARK: - Title
+                    Text("Clubs")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+                    
+                    // MARK: - Search Bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(theme.textSecondary)
+                        
+                        TextField("Search clubs…", text: $searchText)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    
+                    // MARK: - Categories
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            ForEach(categories, id: \.self) { cat in
+                                
+                                Text(cat)
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 8)
+                                    .background(
+                                        selectedCategory == cat ?
+                                        theme.chipSelectedBG :
+                                        theme.chipBG
+                                    )
+                                    .foregroundColor(
+                                        selectedCategory == cat ?
+                                        theme.chipSelectedText :
+                                        theme.textPrimary
+                                    )
+                                    .clipShape(Capsule())
+                                    .onTapGesture { selectedCategory = cat }
+                            }
+                        }
+                    }
+                    
+                    // MARK: - Club Cards List
+                    VStack(spacing: 16) {
+                        ForEach(filtered) { club in
+                            NavigationLink(destination: ClubDetailsView(club: club)) {
+                                ClubCard(club: club)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 80)
+                }
+                .padding(.horizontal)
+            }
+        }
+        .navigationBarHidden(true)
+    }
+}
