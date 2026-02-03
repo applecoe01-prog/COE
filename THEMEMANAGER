@@ -1,0 +1,50 @@
+import SwiftUI
+import Combine
+
+class ThemeManager: ObservableObject {
+    @Published var isDark = false
+    
+    // MARK: - Backgrounds
+    var background: Color {
+        isDark ? Color.black : Color(red: 248/255, green: 235/255, blue: 214/255)
+    }
+    
+    var cardBackground: Color {
+        isDark ? Color.white.opacity(0.08) : Color.white
+    }
+    
+    // MARK: - Text Colors
+    var textPrimary: Color {
+        isDark ? .white : Color(red: 30/255, green: 30/255, blue: 30/255)
+    }
+    
+    var textSecondary: Color {
+        isDark ? Color.white.opacity(0.6) : Color.gray
+    }
+    
+    // MARK: - Chips
+    var chipBG: Color {
+        isDark ? Color.white.opacity(0.15) : Color.white.opacity(0.7)
+    }
+    
+    var chipSelectedBG: Color {
+        isDark ? Color.white : Color(red: 10/255, green: 60/255, blue: 70/255)
+    }
+    
+    var chipSelectedText: Color {
+        isDark ? .black : .white
+    }
+    
+    
+    
+    var categoryColor: [String: Color] = [
+        "Clubs": Color(red: 0/255, green: 140/255, blue: 255/255),
+        "Technical": Color(red: 0/255, green: 140/255, blue: 255/255),
+        "Cultural": Color(red: 255/255, green: 180/255, blue: 0/255),
+        "Sports": Color(red: 0/255, green: 180/255, blue: 90/255),
+        "Literary": Color(red: 200/255, green: 80/255, blue: 255/255),
+        "Admin": Color(red: 120/255, green: 120/255, blue: 120/255),
+        "Placements": Color(red: 255/255, green: 70/255, blue: 70/255),
+        "Lost and Found": Color(red: 0/255, green: 140/255, blue: 255/255)
+    ]
+}
