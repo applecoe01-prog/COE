@@ -1,0 +1,91 @@
+import SwiftUI
+
+struct NoticesView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State private var selectedCategory = "All"
+    @State private var search = ""
+    
+    let categories = ["All", "Admin", "Clubs", "Placements", "Lost and Found"]
+    let notices = Notice.sample
+    
+    var filtered: [Notice] {
+        notices.filter { notice in
+            
+            (selectedCategory == "All" || notice.category == selectedCategory)
+            
+            &&
+            
+            (search.isEmpty ||
+             notice.title.lowercased().contains(search.lowercased()) ||
+             notice.category.lowercased().contains(search.lowercased()))
+        }
+    }
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 18) {
+                    
+                    Text("Notices")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+                    
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Search notices…", text: $search)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .foregroundColor(theme.textSecondary)
+                    
+                    // Category chips
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 10) {
+                            
+                            ForEach(categories, id: \.self) { cat in
+                                Text(cat)
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 8)
+                                    .background(
+                                        selectedCategory == cat
+                                        ? theme.chipSelectedBG
+                                        : theme.chipBG
+                                    )
+                                    .foregroundColor(
+                                        selectedCategory == cat
+                                        ? theme.chipSelectedText
+                                        : theme.textPrimary
+                                    )
+                                    .clipShape(Capsule())
+                                    .onTapGesture {
+                                        selectedCategory = cat
+                                    }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // Cards list
+                    VStack(spacing: 16) {
+                        ForEach(filtered) { notice in
+                            NoticeCard(notice: notice)
+                        }
+                    }
+                    .padding(.horizontal, 2)
+                    .padding(.bottom, 70)
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+}
