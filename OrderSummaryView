@@ -1,69 +1,93 @@
 import SwiftUI
 
 struct OrderSummaryView: View {
-
+    
     @ObservedObject var vm: CafeteriaViewModel
     @EnvironmentObject var theme: ThemeManager
-
+    
     var body: some View {
         ZStack {
             theme.background.ignoresSafeArea()
-
+            
             VStack(alignment: .leading, spacing: 20) {
-
+                
+                // Title
                 Text("Order Summary")
                     .font(.largeTitle.bold())
                     .foregroundColor(theme.textPrimary)
-
-                ForEach(vm.cart) { item in
-                    HStack {
-                        Text(item.itemName)
-                        Spacer()
-                        Text("₹\(Int(item.price))")
+                
+                // Cart Items
+                if vm.cart.isEmpty {
+                    Text("Your cart is empty.")
+                        .foregroundColor(theme.textSecondary)
+                        .font(.headline)
+                    Spacer()
+                } else {
+                    ForEach(vm.cart) { item in
+                        HStack {
+                            Text(item.itemName)
+                                .foregroundColor(theme.textPrimary)
+                            
+                            Spacer()
+                            
+                            Text("₹\(Int(item.price))")
+                                .foregroundColor(theme.textPrimary)
+                        }
+                        .padding(.vertical, 4)
                     }
-                    .foregroundColor(theme.textPrimary)
-                }
-
-                Divider()
-
-                Text("Total: ₹\(Int(vm.totalAmount))")
-                    .font(.headline)
-                    .foregroundColor(theme.textPrimary)
-
-                Button("Place Order") {
-                    vm.placeOrder()
-                }
-                .buttonStyle(orderButtonStyle)
-
-                if vm.isOrderPlaced {
-                    Button("Pay Now") {
-                        vm.payNow()
+                    
+                    Divider()
+                    
+                    // Total Amount
+                    Text("Total: ₹\(Int(vm.totalAmount))")
+                        .font(.headline)
+                        .foregroundColor(theme.textPrimary)
+                    
+                    // Place Order Button
+                    Button(action: {
+                        vm.placeOrder()
+                    }) {
+                        Text("Place Order")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(theme.cardBackground)
+                            .foregroundColor(theme.textPrimary)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
-                    .buttonStyle(payButtonStyle)
-                }
-
-                if vm.isPaid {
-                    NavigationLink("Generate Slip") {
-                        PaymentSlipView(vm: vm)
+                    .padding(.top, 10)
+                    
+                    // Pay Button (Visible after placing order)
+                    if vm.isOrderPlaced {
+                        Button(action: {
+                            vm.payNow()
+                        }) {
+                            Text("Pay Now")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(theme.chipSelectedBG)
+                                .foregroundColor(theme.chipSelectedText)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .padding(.top, 5)
                     }
-                    .buttonStyle(orderButtonStyle)
+                    
+                    // Slip Generator (Visible after payment)
+                    if vm.isPaid {
+                        NavigationLink(destination: PaymentSlipView(vm: vm)) {
+                            Text("Generate Slip")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(theme.cardBackground)
+                                .foregroundColor(theme.textPrimary)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .padding(.top, 5)
+                    }
                 }
-
+                
                 Spacer()
             }
             .padding()
         }
-    }
-
-    var orderButtonStyle: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .fill(theme.cardBackground)
-            .frame(height: 55)
-    }
-
-    var payButtonStyle: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .fill(theme.chipSelectedBG)
-            .frame(height: 55)
     }
 }
