@@ -1,48 +1,53 @@
 import SwiftUI
 
 struct CafeteriaListView: View {
-    
+
     @StateObject var vm = CafeteriaViewModel()
     @EnvironmentObject var theme: ThemeManager
-    
+
     var body: some View {
         ZStack {
             theme.background.ignoresSafeArea()
-            
-            VStack(alignment: .leading, spacing: 20) {
-                
-                Text("Cafeterias")
-                    .font(.largeTitle.bold())
-                    .foregroundColor(theme.textPrimary)
-                    .padding(.top)
-                
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(vm.cafeterias) { cafe in
-                            NavigationLink(
-                                destination: CafeteriaDetailView(vm: vm, cafeteria: cafe)
-                            ) {
-                                cafeteriaCard(cafe)
+
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("Cafeterias")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+
+                    ForEach(vm.cafeterias) { cafe in
+                        NavigationLink(
+                            destination: CafeteriaMenuView(vm: vm, cafeteria: cafe)
+                        ) {
+                            ZStack(alignment: .bottomLeading) {
+                                
+                                Image(cafe.imageName)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 180)
+                                    .clipped()
+                                    .cornerRadius(20)
+                                
+                                LinearGradient(
+                                    colors: [.clear, .black.opacity(0.6)],
+                                    startPoint: .top, endPoint: .bottom
+                                )
+                                .cornerRadius(20)
+
+                                VStack(alignment: .leading) {
+                                    Text(cafe.name)
+                                        .foregroundColor(.white)
+                                        .font(.title2.bold())
+                                }
+                                .padding()
                             }
+                            .shadow(radius: 4)
                         }
                     }
                 }
+                .padding(.horizontal)
             }
-            .padding()
         }
-    }
-    
-    func cafeteriaCard(_ cafe: Cafeteria) -> some View {
-        HStack {
-            Text(cafe.name)
-                .foregroundColor(theme.textPrimary)
-                .font(.headline)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(theme.textSecondary)
-        }
-        .padding()
-        .background(theme.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 }
