@@ -1,0 +1,84 @@
+import SwiftUI
+
+struct CafeteriaMenuView: View {
+
+    @ObservedObject var vm: CafeteriaViewModel
+    let cafeteria: Cafeteria
+    @EnvironmentObject var theme: ThemeManager
+
+    var body: some View {
+        ZStack {
+            theme.background.ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 20) {
+
+                Text(cafeteria.name)
+                    .font(.largeTitle.bold())
+                    .foregroundColor(theme.textPrimary)
+
+                ScrollView {
+                    VStack(spacing: 18) {
+                        ForEach(cafeteria.menu) { item in
+                            menuCard(item)
+                        }
+                    }
+                    .padding(.bottom, 80)
+                }
+            }
+            .padding()
+            .overlay(cartButton, alignment: .bottomTrailing)
+        }
+    }
+
+    func menuCard(_ item: MenuItem) -> some View {
+        HStack(spacing: 15) {
+
+            Image(item.imageName)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 80, height: 80)
+                .clipped()
+                .cornerRadius(12)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(item.itemName)
+                    .foregroundColor(theme.textPrimary)
+                    .font(.headline)
+
+                Text("₹\(Int(item.price))")
+                    .foregroundColor(theme.textSecondary)
+            }
+
+            Spacer()
+
+            Button(action: {
+                vm.addToCart(item: item)
+            }) {
+                Text("Add")
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(theme.chipSelectedBG)
+                    .foregroundColor(theme.chipSelectedText)
+                    .clipShape(Capsule())
+            }
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+    }
+
+    var cartButton: some View {
+        NavigationLink(destination: OrderSummaryView(vm: vm)) {
+            HStack {
+                Image(systemName: "cart.fill")
+                Text("\(vm.cart.count)")
+            }
+            .padding()
+            .background(theme.chipSelectedBG)
+            .foregroundColor(theme.chipSelectedText)
+            .clipShape(Capsule())
+            .shadow(radius: 4)
+            .padding()
+        }
+    }
+}
