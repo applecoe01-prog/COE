@@ -1,0 +1,208 @@
+import SwiftUI
+
+struct EventsView: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    @State private var search = ""
+    @State private var selectedDate = Date()
+    
+    let events = Event.sample
+    
+    // MARK: - Filtered Events (Upcoming)
+    var upcomingEvents: [Event] {
+        events.sorted { $0.date < $1.date }.prefix(3).map { $0 }
+    }
+    
+    // MARK: - Filtered Events (By Date + Search)
+    var filteredEvents: [Event] {
+        events.filter { event in
+            
+            // SEARCH MATCH
+            (search.isEmpty ||
+             event.title.lowercased().contains(search.lowercased()) ||
+             event.category.lowercased().contains(search.lowercased()))
+            
+            &&
+            
+            // DATE MATCH
+            Calendar.current.isDate(event.date, inSameDayAs: selectedDate)
+        }
+    }
+    
+    var body: some View {
+        
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            ScrollView {
+                
+                VStack(alignment: .leading, spacing: 22) {
+                    
+                    // MARK: TITLE
+                    Text("Events")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top)
+                    
+                    
+                    // MARK: SEARCH BAR
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Search events…", text: $search)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .padding()
+                    .background(theme.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .foregroundColor(theme.textSecondary)
+                    
+                    
+                    // MARK: MINI CALENDAR CARD
+                    miniCalendarCard
+                    
+                    
+                    // MARK: UPCOMING EVENTS
+                    Text("Upcoming Events")
+                        .font(.title3.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top, 8)
+                    
+                    VStack(spacing: 14) {
+                        ForEach(upcomingEvents) { event in
+                            UpcomingEventRow(event: event)
+                        }
+                    }
+                    
+                    
+                    // MARK: DATE SELECTOR
+                    Text("Events on Selected Date")
+                        .font(.title3.bold())
+                        .foregroundColor(theme.textPrimary)
+                        .padding(.top, 8)
+                    
+                    DateSelector(selectedDate: $selectedDate)
+                    
+                    
+                    // MARK: MAIN EVENTS LIST
+                    if filteredEvents.isEmpty {
+                        Text("No events on this date.")
+                            .foregroundColor(theme.textSecondary)
+                            .padding(.top, 10)
+                    }
+                    
+                    VStack(spacing: 16) {
+                        ForEach(filteredEvents) { event in
+                            EventCard(event: event)
+                        }
+                    }
+                    .padding(.bottom, 70)
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+    
+    
+    // MARK: MINI CALENDAR CARD
+    var miniCalendarCard: some View {
+        
+        let currentMonth = Calendar.current.component(.month, from: Date())
+        let monthName = DateFormatter().monthSymbols[currentMonth - 1]
+        let currentYear = Calendar.current.component(.year, from: Date())
+        
+        return VStack(alignment: .leading, spacing: 8) {
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(monthName)")
+                        .foregroundColor(theme.textPrimary)
+                        .font(.title3.bold())
+                    Text("\(currentYear)")
+                        .foregroundColor(theme.textSecondary)
+                        .font(.caption)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "calendar")
+                    .foregroundColor(theme.textPrimary)
+            }
+            
+            Divider().background(theme.textSecondary.opacity(0.4))
+            
+            HStack {
+                ForEach(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], id: \.self) { day in
+                    Text(day)
+                        .foregroundColor(theme.textSecondary)
+                        .font(.caption2)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: theme.isDark ? .clear : .black.opacity(0.07), radius: 4, y: 2)
+    }
+}
+
+
+
+// MARK: - Upcoming Event Row
+struct UpcomingEventRow: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    let event: Event
+    
+    var body: some View {
+        
+        HStack(spacing: 12) {
+            
+            // Date Bubble
+            VStack {
+                Text(dayString(event.date))
+                    .font(.title2.bold())
+                Text(monthShort(event.date))
+                    .font(.caption)
+            }
+            .foregroundColor(theme.textPrimary)
+            .frame(width: 55, height: 55)
+            .background(theme.cardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(event.title)
+                    .foregroundColor(theme.textPrimary)
+                    .font(.subheadline.bold())
+                
+                Text(event.category)
+                    .font(.caption2)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(theme.chipBG)
+                    .foregroundColor(theme.textPrimary)
+                    .clipShape(Capsule())
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: theme.isDark ? .clear : .black.opacity(0.06), radius: 3, y: 2)
+    }
+    
+    
+    func dayString(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "d"
+        return f.string(from: date)
+    }
+    
+    func monthShort(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "MMM"
+        return f.string(from: date)
+    }
+}
