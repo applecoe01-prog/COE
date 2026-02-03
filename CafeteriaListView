@@ -1,0 +1,48 @@
+import SwiftUI
+
+struct CafeteriaListView: View {
+    
+    @StateObject var vm = CafeteriaViewModel()
+    @EnvironmentObject var theme: ThemeManager
+    
+    var body: some View {
+        ZStack {
+            theme.background.ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 20) {
+                
+                Text("Cafeterias")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(theme.textPrimary)
+                    .padding(.top)
+                
+                ScrollView {
+                    VStack(spacing: 16) {
+                        ForEach(vm.cafeterias) { cafe in
+                            NavigationLink(
+                                destination: CafeteriaDetailView(vm: vm, cafeteria: cafe)
+                            ) {
+                                cafeteriaCard(cafe)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+    
+    func cafeteriaCard(_ cafe: Cafeteria) -> some View {
+        HStack {
+            Text(cafe.name)
+                .foregroundColor(theme.textPrimary)
+                .font(.headline)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .foregroundColor(theme.textSecondary)
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
