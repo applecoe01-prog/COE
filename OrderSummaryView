@@ -5,6 +5,8 @@ struct OrderSummaryView: View {
     @ObservedObject var vm: CafeteriaViewModel
     @EnvironmentObject var theme: ThemeManager
     
+    @State private var showConfetti = false   // NEW
+    
     var body: some View {
         ZStack {
             theme.background.ignoresSafeArea()
@@ -12,28 +14,62 @@ struct OrderSummaryView: View {
             VStack(alignment: .leading, spacing: 20) {
                 
                 // Title
-                Text("Order Summary")
+                Text("Your Cart")
                     .font(.largeTitle.bold())
                     .foregroundColor(theme.textPrimary)
                 
-                // Cart Items
+                
+                // Empty Cart
                 if vm.cart.isEmpty {
                     Text("Your cart is empty.")
                         .foregroundColor(theme.textSecondary)
                         .font(.headline)
                     Spacer()
                 } else {
-                    ForEach(vm.cart) { item in
-                        HStack {
-                            Text(item.itemName)
-                                .foregroundColor(theme.textPrimary)
-                            
-                            Spacer()
-                            
-                            Text("₹\(Int(item.price))")
-                                .foregroundColor(theme.textPrimary)
+                    
+                    // Cart Items
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(vm.cart) { item in
+                                HStack {
+                                    
+                                    VStack(alignment: .leading) {
+                                        Text(item.itemName)
+                                            .foregroundColor(theme.textPrimary)
+                                            .font(.headline)
+                                        
+                                        Text("₹\(Int(item.price)) × \(item.quantity)")
+                                            .foregroundColor(theme.textSecondary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    // Quantity Buttons
+                                    HStack(spacing: 10) {
+                                        Button("-") {
+                                            vm.decreaseQuantity(item: item)
+                                        }
+                                        .buttonStyle(circleButtonStyle(color: .red))
+                                        
+                                        Button("+") {
+                                            vm.addToCart(item: item)
+                                        }
+                                        .buttonStyle(circleButtonStyle(color: .green))
+                                    }
+                                    
+                                    // Remove Button
+                                    Button {
+                                        vm.removeItem(item: item)
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .foregroundColor(.red)
+                                    }
+                                }
+                                .padding()
+                                .background(theme.cardBackground)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
                         }
-                        .padding(.vertical, 4)
                     }
                     
                     Divider()
@@ -43,35 +79,55 @@ struct OrderSummaryView: View {
                         .font(.headline)
                         .foregroundColor(theme.textPrimary)
                     
-                    // Place Order Button
-                    Button(action: {
-                        vm.placeOrder()
-                    }) {
-                        Text("Place Order")
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(theme.cardBackground)
-                            .foregroundColor(theme.textPrimary)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                    .padding(.top, 10)
                     
-                    // Pay Button (Visible after placing order)
+                    // PLACE ORDER BUTTON
+                    Button("Place Order") {
+                        vm.placeOrder()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(theme.cardBackground)
+                    .foregroundColor(theme.textPrimary)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .padding(.top, 5)
+                    
+                    
+                    // AFTER ORDER PLACED
                     if vm.isOrderPlaced {
-                        Button(action: {
+                        
+                        Text("Order ID: \(vm.orderID)")
+                            .font(.headline)
+                            .foregroundColor(theme.textPrimary)
+                        
+                        Text("Auth Code: \(vm.authCode)")
+                            .font(.title2.bold())
+                            .foregroundColor(.green)
+                        
+                        // ORDER TRACKING
+                        OrderTrackingView(vm: vm)
+                            .padding(.top, 5)
+                        
+                        
+                        // PAY NOW BUTTON
+                        Button("Pay Now") {
                             vm.payNow()
-                        }) {
-                            Text("Pay Now")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(theme.chipSelectedBG)
-                                .foregroundColor(theme.chipSelectedText)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            
+                            // 🎉 TRIGGER CONFETTI
+                            showConfetti = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                showConfetti = false
+                            }
                         }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(theme.chipSelectedBG)
+                        .foregroundColor(theme.chipSelectedText)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                         .padding(.top, 5)
                     }
                     
-                    // Slip Generator (Visible after payment)
+                    
+                    // AFTER PAYMENT
                     if vm.isPaid {
                         NavigationLink(destination: PaymentSlipView(vm: vm)) {
                             Text("Generate Slip")
@@ -88,6 +144,27 @@ struct OrderSummaryView: View {
                 Spacer()
             }
             .padding()
+            
+            // 🎉 CONFETTI OVERLAY
+            if showConfetti {
+                ConfettiView()
+                    .ignoresSafeArea()
+            }
         }
+    }
+}
+
+
+/// Circle Style Buttons (+ / –)
+struct circleButtonStyle: ButtonStyle {
+    let color: Color
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.title3.bold())
+            .frame(width: 32, height: 32)
+            .background(color.opacity(0.25))
+            .clipShape(Circle())
+            .scaleEffect(configuration.isPressed ? 0.8 : 1.0)
     }
 }
