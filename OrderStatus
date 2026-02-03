@@ -1,0 +1,9 @@
+import SwiftUI
+
+enum OrderStage: String, CaseIterable, Codable {
+    case placed = "Order Placed"
+    case preparing = "Preparing"
+    case ready = "Ready for Pickup"
+    case delivered = "Delivered"
+    case paid = "Paid"
+}
