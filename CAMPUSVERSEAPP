@@ -1,0 +1,24 @@
+import SwiftUI
+
+@main
+struct CampusVerseApp: App {
+    
+    @StateObject var theme = ThemeManager()
+    
+    init() {
+        UITabBar.appearance().backgroundColor = UIColor(
+            red: 245/255, green: 230/255, blue: 200/255, alpha: 1
+        )
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            NavigationStack {
+                LoginView()
+            }
+            .environmentObject(theme)
+            .preferredColorScheme(theme.isDark ? .dark : .light)
+        }
+    }
+
+}
