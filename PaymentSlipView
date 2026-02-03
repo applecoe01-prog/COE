@@ -4,32 +4,38 @@ struct PaymentSlipView: View {
 
     @ObservedObject var vm: CafeteriaViewModel
     @EnvironmentObject var theme: ThemeManager
-    
+
     var body: some View {
-        VStack(spacing: 20) {
-            
-            Text("Payment Slip")
-                .font(.largeTitle.bold())
-                .foregroundColor(theme.textPrimary)
-            
-            ForEach(vm.cart) { item in
-                HStack {
-                    Text(item.itemName)
-                    Spacer()
-                    Text("₹\(Int(item.price))")
+        ZStack {
+            theme.background.ignoresSafeArea()
+
+            VStack(spacing: 20) {
+
+                Text("Payment Slip")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(theme.textPrimary)
+
+                ForEach(vm.cart) { item in
+                    HStack {
+                        Text(item.itemName)
+                        Spacer()
+                        Text("₹\(Int(item.price))")
+                    }
+                    .foregroundColor(theme.textPrimary)
                 }
+
+                Divider()
+
+                Text("Total Paid: ₹\(Int(vm.totalAmount))")
+                    .font(.headline)
+                    .foregroundColor(theme.textPrimary)
+
+                Text("Thank you for your order!")
+                    .foregroundColor(theme.textSecondary)
+
+                Spacer()
             }
-            
-            Divider()
-            
-            Text("Total Paid: ₹\(Int(vm.totalAmount))")
-                .font(.headline)
-            
-            Text("Thank you for your order!")
-                .foregroundColor(theme.textSecondary)
-            
-            Spacer()
+            .padding()
         }
-        .padding()
     }
 }
