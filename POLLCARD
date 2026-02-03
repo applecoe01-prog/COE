@@ -1,0 +1,46 @@
+//
+//  PollCard.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 02/02/26.
+//
+
+
+import SwiftUI
+
+struct PollCard: View {
+    
+    @EnvironmentObject var theme: ThemeManager
+    let poll: Poll
+    
+    var body: some View {
+        
+        VStack(alignment: .leading, spacing: 12) {
+            
+            // Title
+            Text(poll.question)
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+            
+            // Category Chip
+            Text(poll.category)
+                .font(.caption2)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(theme.chipBG)
+                .foregroundColor(theme.textPrimary)
+                .clipShape(Capsule())
+            
+            Divider().background(theme.textSecondary.opacity(0.4))
+            
+            // Options count
+            Text("\(poll.options.count) options available")
+                .font(.caption)
+                .foregroundColor(theme.textSecondary)
+        }
+        .padding()
+        .background(theme.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .shadow(color: theme.isDark ? .clear : .black.opacity(0.06), radius: 4, y: 2)
+    }
+}
