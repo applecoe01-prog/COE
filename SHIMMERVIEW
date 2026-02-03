@@ -1,0 +1,28 @@
+import SwiftUI
+
+struct ShimmerView: View {
+    @State private var move = false
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(Color.white.opacity(0.3))
+            .overlay(
+                LinearGradient(
+                    colors: [.clear, .white.opacity(0.6), .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .offset(x: move ? 200 : -200)
+            )
+            .onAppear {
+                withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) {
+                    move.toggle()
+                }
+            }
+    }
+}//
+//  ShimmerView.swift
+//  Project3
+//
+//  Created by Aman Chaudhary on 31/01/26.
+//
