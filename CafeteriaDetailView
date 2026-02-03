@@ -1,0 +1,65 @@
+import SwiftUI
+
+struct CafeteriaDetailView: View {
+    
+    @ObservedObject var vm: CafeteriaViewModel
+    let cafeteria: Cafeteria
+    @EnvironmentObject var theme: ThemeManager
+
+    var body: some View {
+        
+        VStack(alignment: .leading, spacing: 20) {
+            
+            Text(cafeteria.name)
+                .font(.title.bold())
+                .foregroundColor(theme.textPrimary)
+            
+            Text("Menu")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+            
+            ScrollView {
+                VStack(spacing: 16) {
+                    ForEach(cafeteria.menu) { item in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(item.itemName)
+                                    .foregroundColor(theme.textPrimary)
+                                Text("₹\(Int(item.price))")
+                                    .foregroundColor(theme.textSecondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Button("Add") {
+                                vm.addToCart(item: item)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(theme.chipSelectedBG)
+                            .foregroundColor(theme.chipSelectedText)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .padding()
+                        .background(theme.cardBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                }
+            }
+            
+            NavigationLink(
+                destination: OrderSummaryView(vm: vm)
+            ) {
+                Text("View Cart (\(vm.cart.count))")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(theme.chipSelectedBG)
+                    .foregroundColor(theme.chipSelectedText)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+            
+            Spacer()
+        }
+        .padding()
+    }
+}
