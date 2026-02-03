@@ -1,0 +1,55 @@
+import Foundation
+
+struct Club: Identifiable, Codable, Equatable {
+    var id = UUID()
+    var name: String
+    var category: String
+    var description: String
+    var members: Int
+    
+    // MARK: - Helpers
+    var initials: String {
+        let words = name.split(separator: " ")
+        let letters = words.prefix(2).compactMap { $0.first?.uppercased() }
+        return letters.joined()
+    }
+    
+    // MARK: - Sample Data
+    static let sample: [Club] = [
+        Club(name: "GDG Club", category: "Technical",
+             description: "Learn AI/ML, Cloud, Flutter, Web & DevOps.",
+             members: 200),
+        
+        Club(name: "Innogeeks", category: "Technical",
+             description: "Mobile, Web, ML, IoT & open-source projects.",
+             members: 150),
+
+        Club(name: "CodeChef Chapter", category: "Technical",
+             description: "Competitive programming & DSA sessions.",
+             members: 180),
+        
+        Club(name: "Kvanjali", category: "Cultural",
+             description: "Music, dance, drama, arts & cultural festivals.",
+             members: 120),
+        
+        Club(name: "Rhythmic Beats", category: "Cultural",
+             description: "Dance enthusiasts performing on big stages.",
+             members: 90),
+        
+        Club(name: "Literary Circle", category: "Literary",
+             description: "Debating, poetry, creative writing community.",
+             members: 70),
+        
+        Club(name: "Photography Club", category: "Cultural",
+             description: "Photography, cinematography & editing skills.",
+             members: 65),
+        
+        Club(name: "Sports Club", category: "Sports",
+             description: "Football, Basketball, Cricket & athletic meets.",
+             members: 300),
+        
+        Club(name: "E-Sports Club", category: "Sports",
+             description: "Gaming, tournaments & e-sports competitions.",
+             members: 110)
+    ]
+}
